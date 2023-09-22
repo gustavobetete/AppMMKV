@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native';
-import { MMKV } from 'react-native-mmkv';
+import { MMKV, useMMKVString } from 'react-native-mmkv';
 
 const storage = new MMKV({id: 'myapp'});
 
@@ -10,8 +10,9 @@ type User = {
 }
 
 export default function App() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useMMKVString('user.name');
+  const [email, setEmail] = useMMKVString('user.email');
+
   const [user, setUser] = useState<User>();
 
   function handleSave(){
@@ -28,7 +29,6 @@ export default function App() {
       const newValue = storage.getString(changedKey);
 
       console.log('NOVO VALOR => ', newValue)
-      handleLoad();
     });
 
     return () => listener.remove();
@@ -41,12 +41,14 @@ export default function App() {
         placeholder='Nome...' 
         style={styles.input}
         onChangeText={setName}
+        value={name}
       />
 
       <TextInput 
         placeholder='Email...' 
         style={styles.input}
         onChangeText={setEmail}
+        value={email}
       />
       
       <Button 
@@ -55,7 +57,7 @@ export default function App() {
       />
 
       <Text style={styles.text}>
-        {user?.name} - {user?.email} 
+        {name} - {email} 
       </Text>
     </View>
   );
