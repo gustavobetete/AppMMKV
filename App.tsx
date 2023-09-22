@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native';
 import { MMKV } from 'react-native-mmkv';
 
@@ -16,13 +16,23 @@ export default function App() {
 
   function handleSave(){
     storage.set('user', JSON.stringify({name, email}));
-    handleLoad();
   }
 
   function handleLoad(){
     const data = storage.getString('user');
     setUser(data ? JSON.parse(data) : {});
   }
+
+  useEffect(() => {
+    const listener = storage.addOnValueChangedListener((changedKey) => {
+      const newValue = storage.getString(changedKey);
+
+      console.log('NOVO VALOR => ', newValue)
+      handleLoad();
+    });
+
+    return () => listener.remove();
+  }, []);
 
   return (
     <View style={styles.container}>
