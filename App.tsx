@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, Button, View } from 'react-native';
-import { MMKV, useMMKVObject } from 'react-native-mmkv';
+import { MMKV, useMMKVObject, useMMKV } from 'react-native-mmkv';
 
-const storage = new MMKV({id: 'myapp'});
+//const storage = new MMKV({id: 'myapp'});
 
 type User = {
   name: string;
@@ -14,6 +14,7 @@ export default function App() {
   const [email, setEmail] = useState('');
 
   const [user, setUser] = useMMKVObject<User>('user');
+  const storage = useMMKV({id: 'myapp'});
 
   function handleSave(){
     setUser({name, email})
